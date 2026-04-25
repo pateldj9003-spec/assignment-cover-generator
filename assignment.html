@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Assignment Cover Generator</title>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<style>
+body {
+    font-family: Arial;
+    background: #f0f0f0;
+    text-align: center;
+}
+
+.container {
+    margin: 20px;
+}
+
+input, select {
+    padding: 8px;
+    margin: 5px;
+    width: 260px;
+}
+
+button {
+    padding: 10px 20px;
+    margin-top: 10px;
+    background: black;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+/* PDF DESIGN */
+#pdfContent {
+    width: 700px;
+    height: 900px;
+    background: white;
+    margin: 30px auto;
+    padding: 40px;
+    border: 3px double black;
+    position: relative;
+    text-align: left;
+}
+
+.title {
+    text-align: center;
+    font-size: 40px;
+    font-weight: bold;
+    text-decoration: underline;
+    margin-top: 50px;
+}
+
+.details {
+    margin-top: 150px;
+    font-size: 22px;
+    line-height: 50px;
+}
+
+.date {
+    position: absolute;
+    bottom: 50px;
+    left: 40px;
+    font-size: 20px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+    <h2>Assignment Cover Page Generator</h2>
+
+    <input type="text" id="name" placeholder="Enter Full Name"><br>
+    <input type="text" id="enroll" placeholder="Enrollment No"><br>
+
+    <select id="subject">
+        <option value="">Select Subject</option>
+        <option>Wind and Solar Energy (3160917)</option>
+        <option>EMMI (3160915)</option>
+        <option>Electrical Material (3160923)</option>
+        <option>IPS (3160920)</option>
+    </select><br>
+
+    <button onclick="updatePreview()">Preview</button>
+    <button onclick="downloadPDF()">Print First Page</button>
+</div>
+
+<!-- PDF DESIGN -->
+<div id="pdfContent">
+    <div class="title">Assignment file</div>
+
+    <div class="details">
+        Name :- <span id="pname">__________</span><br>
+        En.no. :- <span id="penroll">__________</span><br>
+        Sub. :- <span id="psubject">__________</span><br>
+        GEC Palanpur
+    </div>
+
+    <!-- DATE AT BOTTOM (FIXED LINE) -->
+    <div class="date">
+        Date :- ______________
+    </div>
+</div>
+
+<script>
+function updatePreview() {
+    document.getElementById("pname").innerText =
+        document.getElementById("name").value || "__________";
+
+    document.getElementById("penroll").innerText =
+        document.getElementById("enroll").value || "__________";
+
+    document.getElementById("psubject").innerText =
+        document.getElementById("subject").value || "__________";
+}
+
+function downloadPDF() {
+    updatePreview();
+
+    const { jsPDF } = window.jspdf;
+    let element = document.getElementById("pdfContent");
+
+    html2canvas(element, { scale: 2 }).then(canvas => {
+        const imgData = canvas.toDataURL("image/png");
+
+        let pdf = new jsPDF('p', 'mm', 'a4');
+
+        let imgWidth = 210;
+        let imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+        pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
+        pdf.save("Assignment_First_Page.pdf");
+    });
+}
+</script>
+
+</body>
+</html>
